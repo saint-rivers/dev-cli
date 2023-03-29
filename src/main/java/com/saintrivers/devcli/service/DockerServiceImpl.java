@@ -1,5 +1,7 @@
 package com.saintrivers.devcli.service;
 
+import com.saintrivers.devcli.resource.FileResource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -8,14 +10,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
+@RequiredArgsConstructor
 public class DockerServiceImpl implements DockerService {
 
-    private void copyFile(String source, String target){
-        Path sourceFile = Path.of(source);
+    private final FileResource.DockerCompose composeResource;
+
+    private void copyFile(String target){
         Path targetFile = Paths.get(target);
 
         try {
-            Files.copy(sourceFile, targetFile);
+            Files.write(targetFile, composeResource.postgres().getBytes());
         } catch (IOException e) {
             System.out.println("unable to copy file data");
         }
@@ -23,11 +27,11 @@ public class DockerServiceImpl implements DockerService {
 
     @Override
     public void generateDockerfile(String application) {
-        this.copyFile("src/main/resources/Dockerfile", "Dockerfile");
+        this.copyFile("Dockerfile");
     }
 
     @Override
     public void generateDockerCompose(String application) {
-        this.copyFile("src/main/resources/docker-compose.yml", "docker-compose.yml");
+        this.copyFile("docker-compose.yml");
     }
 }

@@ -4,17 +4,25 @@ import org.springframework.stereotype.Service;
 
 public class FileResource {
 
+    public static class Utils {
+        private static String cleanIndents(String input) {
+            return input.replace("\n", "\n\s\s");
+        }
+    }
+
     @Service
     public static class Dockerfile {
-
+        public String jre(){
+            return """
+                    FROM eclipse-temurin:17.0.3_7-jre-alpine
+                    COPY build/libs/*.jar /opt/root.jar
+                    ENTRYPOINT ["java", "-jar", "/opt/root.jar"]
+                    """;
+        }
     }
 
     @Service
     public static class DockerCompose {
-
-        private String cleanIndents(String input) {
-            return input.replace("\n", "\n\s\s");
-        }
 
         public String postgres() {
             var service = """
@@ -50,8 +58,8 @@ public class FileResource {
                       **volume**
                     """;
 
-            file = file.replace("**service**", cleanIndents(service));
-            file = file.replace("**volume**", cleanIndents(volume));
+            file = file.replace("**service**", Utils.cleanIndents(service));
+            file = file.replace("**volume**", Utils.cleanIndents(volume));
             return file;
         }
     }

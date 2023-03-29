@@ -14,12 +14,13 @@ import java.nio.file.Paths;
 public class DockerServiceImpl implements DockerService {
 
     private final FileResource.DockerCompose composeResource;
+    private final FileResource.Dockerfile fileResource;
 
-    private void copyFile(String target){
+    private void writeFile(String target, String fileGenerate){
         Path targetFile = Paths.get(target);
 
         try {
-            Files.write(targetFile, composeResource.postgres().getBytes());
+            Files.write(targetFile, fileGenerate.getBytes());
         } catch (IOException e) {
             System.out.println("unable to copy file data");
         }
@@ -27,11 +28,11 @@ public class DockerServiceImpl implements DockerService {
 
     @Override
     public void generateDockerfile(String application) {
-        this.copyFile("Dockerfile");
+        this.writeFile("Dockerfile", fileResource.jre());
     }
 
     @Override
     public void generateDockerCompose(String application) {
-        this.copyFile("docker-compose.yml");
+        this.writeFile("docker-compose.yml", composeResource.postgres());
     }
 }

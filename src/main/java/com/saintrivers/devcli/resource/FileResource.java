@@ -5,7 +5,11 @@ import org.springframework.stereotype.Service;
 public class FileResource {
 
     public static class Utils {
-        private static String cleanIndents(String input) {
+        public static String replace(String data, String token, String value){
+            return data.replace(token, cleanIndents(value));
+        }
+
+        public static String cleanIndents(String input) {
             return input.replace("\n", "\n\s\s");
         }
     }
